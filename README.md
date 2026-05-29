@@ -27,22 +27,35 @@
 
 ---
 
-## 📦 Installation
+## 📦 Installation & Unsigned App Setup
 
-1. Go to the [**Releases**](https://github.com/tepliy/sulse-app/releases) page.
-2. Download the latest **`Sulse.dmg`** file.
-3. Open the downloaded `.dmg` and drag **Sulse** to your **Applications** folder.
-4. Launch the app and enjoy a beautifully integrated menu bar monitor!
+Since Sulse is currently in active development, **it is not signed with an Apple Developer certificate yet**. macOS Gatekeeper will block it by default. 
 
-> [!TIP]
-> **Sulse** runs entirely in your menu bar (system tray) as a clean, low-level background helper to ensure a seamless experience without cluttering your Dock.
+Please follow these quick steps to install and run the app:
+
+1. Go to the [**Releases**](https://github.com/tepliy/sulse-app/releases) page and download **`Sulse.dmg`**.
+2. Open the downloaded `.dmg` and drag **Sulse** to your **Applications** folder.
+3. Choose **one of the methods** below to launch the app:
+
+### Method A: Right-Click Open (Easiest)
+1. Open your **Applications** folder in Finder.
+2. Hold the `Control` key (or right-click) and click on **Sulse**.
+3. Select **Open** from the menu.
+4. Click **Open** in the confirmation dialog.
+
+### Method B: Terminal Command (If macOS says the file is "damaged")
+If macOS shows an error or refuses to launch it, open your **Terminal** app and run the following command:
+```bash
+xattr -cr /Applications/Sulse.app
+```
+*This command safely removes the quarantine flag that macOS automatically attaches to unsigned internet downloads.*
 
 ---
 
-## 🛠 Project Links
+## 🔒 Source Code & License
 
-- **Main Codebase & Development**: [tepliy/sulse](https://github.com/tepliy/sulse) — Source code, feature requests, and developer instructions.
-- **Official Website**: [sulse.ru](https://sulse.ru) *(or your website link)*
+*   **Proprietary & Closed Source**: Sulse is a closed-source application. The source code is private.
+*   **Terms of Use**: By downloading the application, you agree to the [End User License Agreement (EULA)](file:///Users/tepliy/github/sulse-app/LICENSE.md).
 
 ---
 
