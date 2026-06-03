@@ -1,11 +1,11 @@
-# 💻 Sulse — Premium System Monitor & Telemetry for macOS
+# 💻 Sulse — Feel the pulse of your Mac. Without the noise.
 
 <p align="center">
   <img src="AppIcon.png" width="128" height="128" alt="Sulse App Icon">
 </p>
 
 <p align="center">
-  <strong>Sulse</strong> is a simple, lightweight, and beautiful system monitor designed exclusively for macOS (Apple Silicon). It shows you in real-time how your Mac is feeling, keeping all vital telemetry at your fingertips with a gorgeous, modern design.
+  <strong>Sulse</strong> is a lightweight, elegant macOS system monitor. Track CPU heat, memory, disk activity, network speed, and battery health directly from your menu bar with absolute zero overhead.
 </p>
 
 <p align="center">
@@ -18,12 +18,27 @@
 
 ## ✨ Features
 
-*   **⚡️ Complete CPU & GPU Insights**: Monitor real-time loads, speeds, cluster activity (Performance & Efficiency cores), and precise temperatures.
-*   **🔋 Smart Battery Telemetry**: View charge levels, battery health (capacity), cycle counts, charging speeds, and temperature.
-*   **🧠 Memory & Storage Health**: Keep track of RAM usage, memory pressure, active/wired categories, and drive read/write speeds.
-*   **🌐 Network & Connections**: Instant access to upload/download speeds, active connection info, internal/external IPs, signal strength, and VPN status.
-*   **❄️ Cooling & Sensors**: Check fan speeds, ambient light sensor readings, and system thermal pressure.
-*   **🎨 Stunning Design**: Beautiful glassmorphic overlays and sidebar layouts that fit perfectly into macOS, running natively with absolutely **0% UI lag**.
+### 🤫 Whisper Quiet, Feather Light
+Sulse runs silently in the background with zero performance impact. Written completely from scratch in Swift 6 using native Apple Silicon background telemetry, it accesses Mac sensors with direct native kernel APIs and sleeps smoothly when you're not viewing the UI. You get real-time tracking, 0% UI thread overhead, and total peace of mind.
+
+### 🛡️ Smart Menu Bar
+Let Sulse automatically cycle through key metrics, adapting in real-time to your Mac's current workload, or take control and build your own custom status layout.
+
+### ❤️ Free, Clean & Private
+No subscriptions, no annoying pop-ups, and absolutely no background telemetry tracking your habits. Just a beautifully crafted, native utility designed for anyone who loves clean and lightweight tools.
+
+---
+
+## 📊 Rich Telemetry Panels
+
+*   **Unified Dashboard**: Open the dashboard and instantly see if anything needs your attention — a clear health status, potential issues like overheating or low storage, and even a heads-up if your room lighting isn't ideal for comfortable screen time.
+*   **CPU & GPU Cores**: Find out which cores are busy and which are resting — with efficiency and performance cores shown separately for Apple Silicon. Live frequency, temperature, and a list of the top apps using the most processing power.
+*   **Memory & Apps**: A friendly breakdown of your memory usage — how much is taken by apps, how much the system locked for itself, and how much is being compressed. Plus, a list of the hungriest apps so you know exactly what to close first.
+*   **Disk I/O & Scan**: See a clear breakdown of what's eating up storage by file type (videos, photos, archives, etc.) or by folder to spot the heaviest ones. Switch between views in one tap, open any folder directly in Finder, and get a heads-up when free space is running low.
+*   **Network Speeds**: See download and upload speeds at a glance, check if your VPN is active, view your public IP and location, explore Wi-Fi signal strength, and see connected Bluetooth devices with their battery levels.
+*   **Sensors & Room Light**: Sulse measures the ambient light in your room in Lux, tells you if it's too dim or too bright for comfortable work, and shows the color temperature in Kelvin. Below, animated fan gauges spin in real time matching your actual cooling speed.
+*   **Power & Battery**: Set a charge limit at 80%, 85%, or 90% to keep your battery healthy for years. See exactly how power flows, track temperature, health percentage, charge cycles, and AC Bypass status when plugged in but not charging.
+*   **Smart Customization**: Choose Smart Menu Bar mode to automatically show what matters most right now, or build your own custom layout with any combination of metrics.
 
 ---
 
