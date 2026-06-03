@@ -20,6 +20,7 @@
   <a href="https://github.com/tepliy/sulse-app/releases/latest">
     <img src="https://img.shields.io/github/v/release/tepliy/sulse-app?color=4fc08d&label=Download%20Latest%20.DMG&style=for-the-badge" alt="Download Latest DMG">
   </a>
+  <img src="https://img.shields.io/github/downloads/tepliy/sulse-app/total?color=blue&style=for-the-badge" alt="Total Downloads">
 </p>
 
 ---
