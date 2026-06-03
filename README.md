@@ -9,6 +9,14 @@
 </p>
 
 <p align="center">
+  🌐 For detailed information, interactive previews, and complete feature walkthroughs, visit the official website: <a href="https://sulse.fcreator.app"><strong>sulse.fcreator.app</strong></a>
+</p>
+
+<p align="center">
+  <img src="screenshots/general.webp" width="600" alt="Sulse Screenshot">
+</p>
+
+<p align="center">
   <a href="https://github.com/tepliy/sulse-app/releases/latest">
     <img src="https://img.shields.io/github/v/release/tepliy/sulse-app?color=4fc08d&label=Download%20Latest%20.DMG&style=for-the-badge" alt="Download Latest DMG">
   </a>
@@ -44,7 +52,7 @@ No subscriptions, no annoying pop-ups, and absolutely no background telemetry tr
 
 ## 📦 Installation & Unsigned App Setup
 
-Since Sulse is currently in active development, **it is not signed with an Apple Developer certificate yet**. macOS Gatekeeper will block it by default. 
+Sulse is a free, independent project, and this is its very first public release. Since I'm still exploring how much interest there is in the app, and it is distributed completely free of charge, purchasing a paid Apple Developer program membership just to sign the code is not feasible at this early stage. Therefore, **it is not signed with an Apple Developer certificate yet**, and macOS Gatekeeper will block it by default. 
 
 Please follow these quick steps to install and run the app:
 
@@ -64,6 +72,12 @@ If macOS shows an error or refuses to launch it, open your **Terminal** app and 
 xattr -cr /Applications/Sulse.app
 ```
 *This command safely removes the quarantine flag that macOS automatically attaches to unsigned internet downloads.*
+
+## 💬 Feedback & Support
+
+Sulse is in its early stages, and your feedback is incredibly valuable! 
+* **Have a bug or a feature request?** Please [open an Issue](https://github.com/tepliy/sulse-app/issues).
+* **Enjoying the app?** Please **star this repository** ⭐ to show your support and help others discover Sulse!
 
 ---
 
