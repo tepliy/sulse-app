@@ -20,7 +20,7 @@ jobs:
     steps:
       # 1. Checkout repository to allow updating README.md
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -74,8 +74,8 @@ jobs:
           # Clean up any existing VirusTotal report block to prevent duplicates
           CLEANED_BODY=$(echo "$CURRENT_BODY" | perl -0777 -pe 's/\s*---\s*🛡️ \*\*Security Scan:\*\*.*//gs')
           
-          # Format the new security scan report line
-          REPORT_LINE="---"$'\n'"🛡️ **Security Scan:** [View VirusTotal report for this version]($ANALYSIS_URL)"
+          # Format the new security scan report line using HTML to support opening in a new tab
+          REPORT_LINE="---"$'\n'"🛡️ **Security Scan:** <a href=\"$ANALYSIS_URL\" target=\"_blank\">View VirusTotal report for this version</a>"
           
           # Append new report link to the cleaned body
           NEW_BODY="$CLEANED_BODY"$'\n\n'"$REPORT_LINE"
@@ -92,7 +92,11 @@ jobs:
           ANALYSIS_URL=$(echo "${{ steps.vt_scan.outputs.analysis }}" | cut -d'=' -f2-)
           
           # Define new badge content linking to the VirusTotal analysis report (exported to env for Perl)
-          export NEW_BADGE="  <!-- virustotal-badge-start -->\n  <a href=\"$ANALYSIS_URL\" target=\"_blank\">\n    <img src=\"https://img.shields.io/badge/VirusTotal-Verified_Safe-brightgreen?style=flat-square&logo=virustotal\" alt=\"VirusTotal Status\">\n  </a>\n  <!-- virustotal-badge-end -->"
+          export NEW_BADGE="  <!-- virustotal-badge-start -->
+  <a href=\"$ANALYSIS_URL\" target=\"_blank\">
+    <img src=\"https://img.shields.io/badge/VirusTotal-Verified_Safe-brightgreen?style=flat-square&logo=virustotal\" alt=\"VirusTotal Status\">
+  </a>
+  <!-- virustotal-badge-end -->"
           
           # Replace the block in README.md using perl via ENV mapping (safe from delimiter collisions)
           perl -i -0777 -pe 's/<!-- virustotal-badge-start -->.*?<!-- virustotal-badge-end -->/$ENV{NEW_BADGE}/s' README.md
