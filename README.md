@@ -24,11 +24,7 @@
 </p>
 
 <p align="center">
-  <!-- virustotal-badge-start -->
-  <a href="https://github.com/tepliy/sulse-app/releases">
-    <img src="https://img.shields.io/badge/VirusTotal-Pending_Scan-orange?style=flat-square&logo=virustotal" alt="VirusTotal Status">
-  </a>
-  <!-- virustotal-badge-end -->
+    <!-- virustotal-badge-start -->\n  <a href="https://www.virustotal.com/gui/file-analysis/YzQ1ZTFiM2NmNGFhMmU0NDYxMTExYWZjYmYwNDMyNmQ6MTc4MDY1NDgyNg==/detection" target="_blank">\n    <img src="https://img.shields.io/badge/VirusTotal-Verified_Safe-brightgreen?style=flat-square&logo=virustotal" alt="VirusTotal Status">\n  </a>\n  <!-- virustotal-badge-end -->
 </p>
 
 ---
