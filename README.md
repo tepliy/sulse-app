@@ -23,6 +23,14 @@
   <img src="https://img.shields.io/github/downloads/tepliy/sulse-app/total?color=blue&style=for-the-badge" alt="Total Downloads">
 </p>
 
+<p align="center">
+  <!-- virustotal-badge-start -->
+  <a href="https://github.com/tepliy/sulse-app/releases">
+    <img src="https://img.shields.io/badge/VirusTotal-Pending_Scan-orange?style=flat-square&logo=virustotal" alt="VirusTotal Status">
+  </a>
+  <!-- virustotal-badge-end -->
+</p>
+
 ---
 
 ## ✨ Features

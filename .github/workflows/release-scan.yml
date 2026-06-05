@@ -1,0 +1,80 @@
+name: VirusTotal Release Scan
+
+on:
+  release:
+    types: [published, edited] # Trigger when a release is published or edited/updated
+  workflow_dispatch:            # Allow manual triggering for any release
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    # Grant permissions to write/update release descriptions and commit changes
+    permissions:
+      contents: write
+
+    steps:
+      # 1. Checkout repository to allow updating README.md
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # 2. Download DMG file attached to the release
+      - name: Download release asset
+        run: |
+          gh release download ${{ github.event.release.tag_name }} --pattern "*.dmg" --dir .
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 3. Upload and scan the downloaded DMG file with VirusTotal
+      - name: VirusTotal Scan
+        id: vt_scan
+        uses: VirusTotal/vt-action@v2
+        with:
+          files: |
+            *.dmg
+          vt_api_key: ${{ secrets.VT_API_KEY }}
+
+      # 4. Append or update the VirusTotal scan report link in the release description
+      - name: Update Release Description
+        run: |
+          # Get current release description
+          CURRENT_BODY="${{ github.event.release.body }}"
+          
+          # Clean up any existing VirusTotal report block to prevent duplicates
+          CLEANED_BODY=$(echo "$CURRENT_BODY" | perl -0777 -pe 's/\s*---\s*🛡️ \*\*Security Scan:\*\*.*//gs')
+          
+          # Format the new security scan report line
+          REPORT_LINE="---"$'\n'"🛡️ **Security Scan:** [View VirusTotal report for this version](${{ steps.vt_scan.outputs.analysis_url }})"
+          
+          # Append new report link to the cleaned body
+          NEW_BODY="$CLEANED_BODY"$'\n\n'"$REPORT_LINE"
+          
+          # Update release via GitHub CLI
+          gh release edit ${{ github.event.release.tag_name }} --notes "$NEW_BODY"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 5. Update the VirusTotal badge in README.md, commit, and push changes
+      - name: Update README.md
+        run: |
+          # Define new badge content linking to the VirusTotal analysis report
+          NEW_BADGE="  <!-- virustotal-badge-start -->\n  <a href=\"${{ steps.vt_scan.outputs.analysis_url }}\" target=\"_blank\">\n    <img src=\"https://img.shields.io/badge/VirusTotal-Verified_Safe-brightgreen?style=flat-square&logo=virustotal\" alt=\"VirusTotal Status\">\n  </a>\n  <!-- virustotal-badge-end -->"
+          
+          # Replace the block in README.md using perl (cross-platform multiline replace)
+          perl -i -0777 -pe "s/<!-- virustotal-badge-start -->.*?<!-- virustotal-badge-end -->/$NEW_BADGE/s" README.md
+          
+          # Configure git
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Check if there are changes to README.md
+          if ! git diff --exit-code README.md; then
+            git add README.md
+            git commit -m "docs: update VirusTotal scan report link in README [skip ci]"
+            git push origin HEAD:main
+          else
+            echo "No changes to README.md"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
