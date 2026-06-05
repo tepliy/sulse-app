@@ -56,14 +56,17 @@ jobs:
 
       # 4. Append or update the VirusTotal scan report link in the release description
       - name: Update Release Description
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_BODY: ${{ github.event.release.body }}
         run: |
           TAG_NAME="${{ steps.download_asset.outputs.tag_name }}"
           
           # Get the analysis URL from the output (e.g., Sulse.dmg=https://...)
           ANALYSIS_URL=$(echo "${{ steps.vt_scan.outputs.analysis }}" | cut -d'=' -f2-)
           
-          # Get current release description
-          CURRENT_BODY="${{ github.event.release.body }}"
+          # Use the environment variable to avoid shell interpolation syntax errors
+          CURRENT_BODY="$RELEASE_BODY"
           if [ -z "$CURRENT_BODY" ]; then
             CURRENT_BODY=$(gh release view "$TAG_NAME" --json body --template '{{.body}}')
           fi
@@ -79,20 +82,20 @@ jobs:
           
           # Update release via GitHub CLI
           gh release edit "$TAG_NAME" --notes "$NEW_BODY"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # 5. Update the VirusTotal badge in README.md, commit, and push changes
       - name: Update README.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Get the analysis URL from the output
           ANALYSIS_URL=$(echo "${{ steps.vt_scan.outputs.analysis }}" | cut -d'=' -f2-)
           
-          # Define new badge content linking to the VirusTotal analysis report
-          NEW_BADGE="  <!-- virustotal-badge-start -->\n  <a href=\"$ANALYSIS_URL\" target=\"_blank\">\n    <img src=\"https://img.shields.io/badge/VirusTotal-Verified_Safe-brightgreen?style=flat-square&logo=virustotal\" alt=\"VirusTotal Status\">\n  </a>\n  <!-- virustotal-badge-end -->"
+          # Define new badge content linking to the VirusTotal analysis report (exported to env for Perl)
+          export NEW_BADGE="  <!-- virustotal-badge-start -->\n  <a href=\"$ANALYSIS_URL\" target=\"_blank\">\n    <img src=\"https://img.shields.io/badge/VirusTotal-Verified_Safe-brightgreen?style=flat-square&logo=virustotal\" alt=\"VirusTotal Status\">\n  </a>\n  <!-- virustotal-badge-end -->"
           
-          # Replace the block in README.md using perl (cross-platform multiline replace)
-          perl -i -0777 -pe "s/<!-- virustotal-badge-start -->.*?<!-- virustotal-badge-end -->/$NEW_BADGE/s" README.md
+          # Replace the block in README.md using perl via ENV mapping (safe from delimiter collisions)
+          perl -i -0777 -pe 's/<!-- virustotal-badge-start -->.*?<!-- virustotal-badge-end -->/$ENV{NEW_BADGE}/s' README.md
           
           # Configure git
           git config --global user.name "github-actions[bot]"
@@ -106,5 +109,3 @@ jobs:
           else
             echo "No changes to README.md"
           fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
