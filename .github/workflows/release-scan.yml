@@ -4,6 +4,11 @@ on:
   release:
     types: [published, edited] # Trigger when a release is published or edited/updated
   workflow_dispatch:            # Allow manual triggering for any release
+    inputs:
+      tag_name:
+        description: 'Release tag to scan (leave empty for the latest release)'
+        required: false
+        default: ''
 
 jobs:
   scan:
@@ -19,10 +24,24 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      # 2. Download DMG file attached to the release
+      # 2. Determine target tag name and download DMG file attached to the release
       - name: Download release asset
+        id: download_asset
         run: |
-          gh release download ${{ github.event.release.tag_name }} --pattern "*.dmg" --dir .
+          # Determine tag name from event or fallback to latest
+          TAG_NAME="${{ github.event.release.tag_name }}"
+          if [ -z "$TAG_NAME" ]; then
+            TAG_NAME="${{ github.event.inputs.tag_name }}"
+          fi
+          if [ -z "$TAG_NAME" ]; then
+            TAG_NAME=$(gh release view --json tagName --template '{{.tagName}}')
+          fi
+          
+          echo "Target tag name: $TAG_NAME"
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+          
+          # Download the DMG file
+          gh release download "$TAG_NAME" --pattern "*.dmg" --dir .
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -38,11 +57,16 @@ jobs:
       # 4. Append or update the VirusTotal scan report link in the release description
       - name: Update Release Description
         run: |
+          TAG_NAME="${{ steps.download_asset.outputs.tag_name }}"
+          
           # Get the analysis URL from the output (e.g., Sulse.dmg=https://...)
           ANALYSIS_URL=$(echo "${{ steps.vt_scan.outputs.analysis }}" | cut -d'=' -f2-)
           
           # Get current release description
           CURRENT_BODY="${{ github.event.release.body }}"
+          if [ -z "$CURRENT_BODY" ]; then
+            CURRENT_BODY=$(gh release view "$TAG_NAME" --json body --template '{{.body}}')
+          fi
           
           # Clean up any existing VirusTotal report block to prevent duplicates
           CLEANED_BODY=$(echo "$CURRENT_BODY" | perl -0777 -pe 's/\s*---\s*🛡️ \*\*Security Scan:\*\*.*//gs')
@@ -54,7 +78,7 @@ jobs:
           NEW_BODY="$CLEANED_BODY"$'\n\n'"$REPORT_LINE"
           
           # Update release via GitHub CLI
-          gh release edit ${{ github.event.release.tag_name }} --notes "$NEW_BODY"
+          gh release edit "$TAG_NAME" --notes "$NEW_BODY"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
