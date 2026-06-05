@@ -29,7 +29,7 @@ jobs:
       # 3. Upload and scan the downloaded DMG file with VirusTotal
       - name: VirusTotal Scan
         id: vt_scan
-        uses: VirusTotal/vt-action@v2
+        uses: crazy-max/ghaction-virustotal@v5
         with:
           files: |
             *.dmg
@@ -38,6 +38,9 @@ jobs:
       # 4. Append or update the VirusTotal scan report link in the release description
       - name: Update Release Description
         run: |
+          # Get the analysis URL from the output (e.g., Sulse.dmg=https://...)
+          ANALYSIS_URL=$(echo "${{ steps.vt_scan.outputs.analysis }}" | cut -d'=' -f2-)
+          
           # Get current release description
           CURRENT_BODY="${{ github.event.release.body }}"
           
@@ -45,7 +48,7 @@ jobs:
           CLEANED_BODY=$(echo "$CURRENT_BODY" | perl -0777 -pe 's/\s*---\s*🛡️ \*\*Security Scan:\*\*.*//gs')
           
           # Format the new security scan report line
-          REPORT_LINE="---"$'\n'"🛡️ **Security Scan:** [View VirusTotal report for this version](${{ steps.vt_scan.outputs.analysis_url }})"
+          REPORT_LINE="---"$'\n'"🛡️ **Security Scan:** [View VirusTotal report for this version]($ANALYSIS_URL)"
           
           # Append new report link to the cleaned body
           NEW_BODY="$CLEANED_BODY"$'\n\n'"$REPORT_LINE"
@@ -58,8 +61,11 @@ jobs:
       # 5. Update the VirusTotal badge in README.md, commit, and push changes
       - name: Update README.md
         run: |
+          # Get the analysis URL from the output
+          ANALYSIS_URL=$(echo "${{ steps.vt_scan.outputs.analysis }}" | cut -d'=' -f2-)
+          
           # Define new badge content linking to the VirusTotal analysis report
-          NEW_BADGE="  <!-- virustotal-badge-start -->\n  <a href=\"${{ steps.vt_scan.outputs.analysis_url }}\" target=\"_blank\">\n    <img src=\"https://img.shields.io/badge/VirusTotal-Verified_Safe-brightgreen?style=flat-square&logo=virustotal\" alt=\"VirusTotal Status\">\n  </a>\n  <!-- virustotal-badge-end -->"
+          NEW_BADGE="  <!-- virustotal-badge-start -->\n  <a href=\"$ANALYSIS_URL\" target=\"_blank\">\n    <img src=\"https://img.shields.io/badge/VirusTotal-Verified_Safe-brightgreen?style=flat-square&logo=virustotal\" alt=\"VirusTotal Status\">\n  </a>\n  <!-- virustotal-badge-end -->"
           
           # Replace the block in README.md using perl (cross-platform multiline replace)
           perl -i -0777 -pe "s/<!-- virustotal-badge-start -->.*?<!-- virustotal-badge-end -->/$NEW_BADGE/s" README.md
